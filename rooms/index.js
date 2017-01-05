@@ -2,6 +2,11 @@ var http = require('http');
 var express = require('express');
 var socketio = require('socket.io');
 var path = require('path');
+var admin = require('firebase-admin');
+admin.initializeApp({
+  credential: admin.credential.cert("competitive-rps-firebase-adminsdk-aqmiv-272672c409.json"),
+  databaseURL: "https://competitive-rps.firebaseio.com"
+});
 var router = express();
 var server = http.createServer(router);
 var io = socketio.listen(server);
