@@ -1,0 +1,82 @@
+<script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+<style>
+div
+{
+	vertical-align: middle;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+</style>
+<script>
+var socket = io();
+var startTime=29
+window.onload=function()
+{
+setInterval(function()
+{
+if (startTime!=0)
+{
+	document.getElementById("timer").innerHTML = startTime
+	if (startTime<=10)
+	{
+		if (startTime%2==0)
+		{
+			document.body.style.backgroundColor = "red";
+		}
+		else
+		{
+			document.body.style.backgroundColor = "white";
+		}
+	}
+	startTime-=1
+}
+},1000);
+}
+function r()
+{
+console.log("r")
+document.getElementById("output").innerHTML = "<img src='rock.png'>"
+socket.emit("r");
+}
+function p()
+{
+console.log("p")
+document.getElementById("output").innerHTML = "<img src='paper.png'>"
+socket.emit("p");
+}
+function s()
+{
+console.log("s")
+document.getElementById("output").innerHTML = "<img src='scissors.png'>"
+socket.emit("s");
+}
+
+</script>
+<div class="timerBox"><center><div id="timer">30</div></center></div>
+<center>You have selected:</center><br>
+<center><div id="output"><h1>Nothing</h1><br><br><br><br><br><br></div></center>
+
+
+
+
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+<hr>
+<center><div><img src="rock.png" onclick="r()"><img src="paper.png" onclick="p()"><img src="scissors.png" onclick="s()"></div></center>
