@@ -1,4 +1,5 @@
 <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 <style>
 div
 {
@@ -19,64 +20,146 @@ div
 </style>
 <script>
 var socket = io();
-var startTime=29
+var startTime=10
+var currentselection="Nothing"
+var shuffletimer=4000
+var currentshuffleimage="r";
+var delayover=true
 window.onload=function()
 {
-setInterval(function()
-{
-if (startTime!=0)
-{
-	document.getElementById("timer").innerHTML = startTime
-	if (startTime<=10)
+	setInterval(function()
 	{
-		if (startTime%2==0)
+		if (!(startTime<=0))
 		{
-			document.body.style.backgroundColor = "red";
+			document.getElementById("timer").innerHTML = startTime
+			if (startTime<=10)
+			{
+				if (startTime%2==0)
+				{
+					document.body.style.backgroundColor = "red";
+				}
+				else
+				{
+					document.body.style.backgroundColor = "white";
+				}
+			}
+			startTime-=1
 		}
-		else
+		document.getElementById("timer").innerHTML = startTime
+		if (startTime==0)
 		{
-			document.body.style.backgroundColor = "white";
+			startTime=-1
+			animation();
+			clearInterval();
 		}
-	}
-	startTime-=1
+	},1000);
+
 }
-},1000);
+function animation()
+{
+	console.log("Animation");
+	document.getElementById("output2").innerHTML = document.getElementById("output").innerHTML
+	$("#show").fadeOut();
+
+	var delay=setTimeout(function(){$("#animation").fadeIn()
+	
+	while(shuffletimer>10 && delayover)
+	{
+	delayover=false
+	console.log(shuffletimer)
+	shuffle=setTimeout(function(){change();delayover=true},shuffletimer);
+	shuffletimer=shuffletimer/2;
+	}
+	},500);
+	//show.style="display:none !important";
+}
+function change()
+{
+	console.log("changing")
+	if (currentshuffleimage=="r")
+	{
+		document.getElementById("shuffle").innerHTML = "<img src='paper.png'>"
+		currentshuffleimage="p"
+	}
+	else if (currentshuffleimage=="p")
+	{
+		document.getElementById("shuffle").innerHTML = "<img src='scissors.png'>"
+		currentshuffleimage="s"
+	}
+	else
+	{
+		document.getElementById("shuffle").innerHTML = "<img src='rock.png'>"
+		currentshuffleimage="r"
+	}
 }
 function r()
 {
-console.log("r")
-document.getElementById("output").innerHTML = "<img src='rock.png'>"
-socket.emit("r");
+	if(startTime!=0 && currentselection!="r")
+	{
+		console.log("r");
+		currentselection="r";
+		document.getElementById("output").innerHTML = "<img src='rock.png'>";
+		socket.emit("r");
+	}
 }
 function p()
 {
-console.log("p")
-document.getElementById("output").innerHTML = "<img src='paper.png'>"
-socket.emit("p");
+	if(startTime!=0 && currentselection!="p")
+	{
+		console.log("p")
+		currentselection="p";
+		document.getElementById("output").innerHTML = "<img src='paper.png'>"
+		socket.emit("p");
+	}
 }
 function s()
 {
-console.log("s")
-document.getElementById("output").innerHTML = "<img src='scissors.png'>"
-socket.emit("s");
+	if(startTime!=0 && currentselection!="s")
+	{
+		console.log("s")
+		currentselection="s";
+		document.getElementById("output").innerHTML = "<img src='scissors.png'>"
+		socket.emit("s");
+	}
+}
+function win()
+{
+
+}
+function lose()
+{
+
+}
+function tie()
+{
+
 }
 
 </script>
-<div class="timerBox"><center><div id="timer">30</div></center></div>
-<center>You have selected:</center><br>
-<center><div id="output"><h1>Nothing</h1><br><br><br><br><br><br></div></center>
+<div id="show" style="display:block">
+	<div class="timerBox">
+		<center><div id="timer">30</div></center>
+	</div>
+	<center>You have selected:</center><br>
+	<center>
+		<div id="output"><h1>Nothing</h1><br><br><br><br><br></div>
+	</center>
 
 
 
 
 
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-
-<hr>
+<br><br><br><br><br><br><br><hr>
 <center><div><img src="rock.png" onclick="r()"><img src="paper.png" onclick="p()"><img src="scissors.png" onclick="s()"></div></center>
+</div>
+<div id="animation" style="display:none">
+<center>
+<table style="vertical-align:middle !important" style="border-style:solid">
+<tr>
+	<td><div id="output2"></div></td>
+	<td><div id="shuffle"><img src="rock.png"></div></td>
+</table>
+
+
+
+</div>
