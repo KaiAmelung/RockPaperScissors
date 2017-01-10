@@ -62,9 +62,11 @@ io.sockets.on('connection', function(socket) {
         		if(!snap.exists())
         			socket.emit('errorInCreateRoom', 'Problem accessing firebase data.');
         		else {
-        			rooms[vars.room] = {players: 1, elo: snap.elo}
+        			rooms[vars.room] = {"players": 1, "elo": snap.elo, player1token: vars.token, player1move: ""}
         			var nsp = io.of('/'+vars.room)
-        			nsp.on('connection')
+        			nsp.on('connection', function(socket){
+        				socket.on("r", token)
+        			});
         			socket.join(vars.room);
         			socket.emit('createRoomSuccess');
         		}
