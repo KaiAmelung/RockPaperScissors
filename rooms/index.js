@@ -200,12 +200,34 @@ function startGame(room) {
 				winner = rooms[room][player2token];
 			if(winner!="") {
 				nsp.emit("winner", winner);
-				
+				if(winner == rooms[room][player1token]){
+					ref.child('users/'+tokenToUsers[rooms[room][player1token]]).once('value').then(function(snap){
+						ref.child('users/'+tokenToUsers[rooms[room][player1token]]).update({
+							elo: snap.elo+10
+						});
+					});
+					ref.child('users/'+tokenToUsers[rooms[room][player2token]]).once('value').then(function(snap){
+						ref.child('users/'+tokenToUsers[rooms[room][player2token]]).update({
+							elo: snap.elo-10
+						});
+					});
+				}
+				else {
+					ref.child('users/'+tokenToUsers[rooms[room][player1token]]).once('value').then(function(snap){
+						ref.child('users/'+tokenToUsers[rooms[room][player1token]]).update({
+							elo: snap.elo-10
+						});
+					});
+					ref.child('users/'+tokenToUsers[rooms[room][player2token]]).once('value').then(function(snap){
+						ref.child('users/'+tokenToUsers[rooms[room][player2token]]).update({
+							elo: snap.elo+10
+						});
+					});
+				}
 				setTimeout(function(){
 					nsp.emit("endGame");
 					for(var i = 0; i<rooms[room][sockets].length; i++)
 						rooms[room][sockets][i].leave(room);
-					rooms[room][sockets]=null;
 					rooms[room] = null;
 				}, 5000);
 			}
