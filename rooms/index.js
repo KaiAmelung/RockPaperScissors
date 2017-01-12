@@ -55,7 +55,7 @@ io.sockets.on('connection', function(socket) {
 	});
 	socket.on('login', function(creds){
 		var auth = admin.auth()
-		auth.signInWithEmailAndPassword().then(function(user){
+		auth.signInWithEmailAndPassword(creds.email, creds.password).then(function(user){
 			var token = uid(16);
 			usersToToken[user.uid] = token;
 			tokenToUsers[token] = user.uid;
