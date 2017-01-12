@@ -40,29 +40,25 @@ io.sockets.on('connection', function(socket) {
 	socket.on('signup', function(creds){
 		var auth = admin.auth();
 		auth.createUserWithEmailAndPassword(creds.email, creds.password).then(function(user){
+			var tok = uid(16);
 			ref.child('users/'+user.uid).set({
 				email: creds.email,
-				elo: 1000
+				elo: 1000,
+				token: tok
 			});
-			var token = uid(16);
-			socketToToken[socket] = token;
-			usersToToken[user.uid] = token;
-			tokenToUsers[token] = user.uid;
-			socket.emit('signUpSuccess', token);
+			socketToToken[socket] = tok;
+			usersToToken[user.uid] = tok;
+			tokenToUsers[tok] = user.uid;
+			socket.emit('signUpSuccess', tok);
 		}, function(err){
 			socket.emit('errorInSignup', err.message);
 		});
 	});
-	socket.on('login', function(creds){
-		var auth = admin.auth()
-		auth.signInWithEmailAndPassword(creds.email, creds.password).then(function(user){
-			var token = uid(16);
-			usersToToken[user.uid] = token;
-			tokenToUsers[token] = user.uid;
-			socket.emit('loginSuccess', token);
-		}, function(err){
-			socket.emit('errorInLogin', err.message);
-		});
+	socket.on('login', function(info){
+		socketToToken[socket] = info.token;
+		usersToToken[info.uid] = info.token;
+		tokenToUsers[info.token] = info.uid;
+		socket.emit('loginSuccess', info.token)
 	});
 	socket.on('createRoom', function(vars){
 		if(tokenToUsers[vars.token]==null)

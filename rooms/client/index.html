@@ -31,9 +31,6 @@
 		token = tok
 		document.getElementById('message').innerHTML = "You have logged in, your token is "+token+"!"
 	})
-	socket.on('errorInLogin', function(err){
-		document.getElementById('message').innerHTML = err
-	})
 	function login(){
 		socket.emit('login', {email: document.getElementById('user').value, password: document.getElementById('pass').value});
 	}
