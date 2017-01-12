@@ -37,28 +37,11 @@ io.sockets.on('connection', function(socket) {
 			usersToToken[user]=null;
 		}
 	});
-	socket.on('signup', function(creds){
-		var auth = admin.auth();
-		auth.createUserWithEmailAndPassword(creds.email, creds.password).then(function(user){
-			var tok = uid(16);
-			ref.child('users/'+user.uid).set({
-				email: creds.email,
-				elo: 1000,
-				token: tok
-			});
-			socketToToken[socket] = tok;
-			usersToToken[user.uid] = tok;
-			tokenToUsers[tok] = user.uid;
-			socket.emit('signUpSuccess', tok);
-		}, function(err){
-			socket.emit('errorInSignup', err.message);
-		});
-	});
-	socket.on('login', function(info){
+	socket.on('initUser', function(info){
 		socketToToken[socket] = info.token;
 		usersToToken[info.uid] = info.token;
 		tokenToUsers[info.token] = info.uid;
-		socket.emit('loginSuccess', info.token)
+		socket.emit('initSuccess', info.token)
 	});
 	socket.on('createRoom', function(vars){
 		if(tokenToUsers[vars.token]==null)

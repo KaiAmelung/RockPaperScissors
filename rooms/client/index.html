@@ -20,23 +20,9 @@
 <script>
 	var socket = io('http://localhost:8080')
 	var token = ''
-	socket.on('signUpSuccess', function(tok){
+	socket.on('initSuccess', function(tok){
 		token = tok
-		document.getElementById('message').innerHTML = "You have signed up, your token is "+token+"!"
 	})
-	socket.on('errorInSignup', function(err){
-		document.getElementById('message').innerHTML = err
-	})
-	socket.on('loginSuccess', function(tok){
-		token = tok
-		document.getElementById('message').innerHTML = "You have logged in, your token is "+token+"!"
-	})
-	function login(){
-		socket.emit('login', {email: document.getElementById('user').value, password: document.getElementById('pass').value});
-	}
-	function signup(){
-		socket.emit('signup', {email: document.getElementById('user').value, password: document.getElementById('pass').value});
-	}
 </script>
 </body>
 </html>
