@@ -1,0 +1,52 @@
+.you
+{
+	margin-left:20%;
+	color: #428bca
+}
+.other
+{
+	margin-right:20%;
+	margin-left: 80%;
+	color: #428bca
+}
+body 
+{
+	background-color:#d3d3d3
+}
+.line {
+  position:fixed;
+  border-right: thick solid #000000;
+  left:50%;
+  height:100%
+}
+.box
+{
+ margin-left:10%;
+ text-align:center;
+ margin-top:6.5%;
+ 
+}
+.paper
+{
+ position:relative;
+ left: 53%;
+ border: 8px solid red;
+ border-radius: 98px;
+}
+.rock
+{
+ position:relative;
+ right:15px;
+ top:15px;
+ border: 8px solid red;
+ border-radius: 98px;
+}
+.scissors
+{
+ position:relative;	
+ right:15px;
+ left:15px;
+ top:15px;
+ border: 8px solid red;
+ border-radius: 98px;
+}
