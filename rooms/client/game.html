@@ -1,6 +1,6 @@
 <html>
 <head>
-	<title>Client</title>
+	<title>Rock Paper Scissor Game</title>
 	<link rel="stylesheet" type="text/css" href="main.css" media="screen" />
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 	<script src="index.js"></script>
@@ -20,14 +20,15 @@
 	<tr><td><div class="rock" id="r1"><img src="rock.png" onclick="rock()"></div></td>
 	<td><div class="scissors" id="s1"><img src="scissors.png" onclick="scissors()"></div></td></tr>
 </table>
+</div>
+<center><div id="winMessage" class="win"></div></center>
 <table class="boxHidden" style="display:none">
 	<tr><td><div id="outputYou"></td></td></tr>
 </table>
 <table class="OboxHidden" style="display:none">
 	<tr><td><div id="outputEnemy"></td></td></tr>
 </table>
-</div>
-<div id="winMessage" class="win"><center></center></div>
+
 </body>
 </html>
 
