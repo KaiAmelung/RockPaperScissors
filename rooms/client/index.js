@@ -6,6 +6,7 @@ var switching="None"
   //		var timeLeft=updateTime
 	//	});	
 window.onload=function(){
+	setTimeout(function(){animation()},10000);
 	setInterval(function(){change()},250);
 
 }
@@ -23,6 +24,7 @@ if (selected=="None")
 document.getElementById("outputEnemy").innerHTML = "<img src='scissors.png'>"
 $(".Box").fadeOut();
 $(".OBox").fadeOut();
+$(".all").fadeOut();
 setTimeout(function(){secondPhase()},500)
 }
 function secondPhase()
@@ -30,10 +32,12 @@ function secondPhase()
 	console.log("Second");
 	$(".BoxHidden").fadeIn();
 	$(".OBoxHidden").fadeIn();
+	tie()
 	setTimeout(function(){thirdPhase()},1000)
 }
 function thirdPhase()
 {
+	$(".win").fadeIn();
 	$(".all").fadeOut();
 }
 function win()
@@ -47,7 +51,22 @@ function lose()
 function tie()
 {
 	document.getElementById("winMessage").innerHTML="Draw!";
+	setTimeout(function(){reset1()},1000)
 
+}
+function reset1()
+{
+	$(".win").fadeOut();
+	$(".BoxHidden").fadeOut();
+	$(".OBoxHidden").fadeOut();
+	setTimeout(function(){reset2()},300)
+}
+function reset2()
+{
+	document.getElementById("winMessage").innerHTML="";
+	$(".all").fadeIn();
+	$(".Box").fadeIn();
+	$(".OBox").fadeIn();
 }
 function change()
 {
