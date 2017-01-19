@@ -27,6 +27,8 @@ var tokenToUsers = {};
 
 var socketToToken = {};
 
+var tokenToRoom = {};
+
 io.sockets.on('connection', function(socket) {
 	socket.on('disconnect', function(){
 		if(socketToToken[socket]!=null){
@@ -37,129 +39,155 @@ io.sockets.on('connection', function(socket) {
 			usersToToken[user]=null;
 		}
 	});
-	socket.on('initUser', function(info){
-		socketToToken[socket] = info.token;
-		usersToToken[info.uid] = info.token;
-		tokenToUsers[info.token] = info.uid;
-		socket.emit('initSuccess', info.token)
+	socket.on('login', function(idtoken){
+		admin.auth().verifyIdToken(idtoken).then(function(decoded){
+			socketToToken[socket]=decoded;
+			tokenToUsers[decoded]=decoded.uid;
+			usersToToken[decoded.uid]=decoded;
+			socket.emit("loginSuccess")
+		}).catch(function(error){
+			socket.emit("errorInLogin", "Bad token.")
+		})
 	});
 	socket.on('createRoom', function(vars){
-		if(tokenToUsers[vars.token]==null)
-			socket.emit('errorInCreateRoom', 'There is no user associated with this token.');
-		else if(rooms[vars.room]!=null)
-        	socket.emit('errorInCreateRoom', 'There is a room already associated with that name.');
-        else {
-        	ref.child('users/'+tokenToUsers[vars.token]).once('value').then(function(snap){
-        		if(!snap.exists())
-        			socket.emit('errorInCreateRoom', 'Problem accessing firebase data.');
-        		else {
-        			rooms[vars.room] = {"players": 1, "elo": snap.elo, player1token: vars.token, player1move: "", player2token: "", player2move: "", sockets: [socket, null], gameInterval: null};
-        			var nsp = io.of('/'+vars.room);
-        			nsp.on('connection', function(socket2){
-        				socket2.on('disconnect', function(){
-        					rooms[vars.room][players]--;
-        					if(rooms[vars.room][players]==0){
-        						rooms[vars.room] = null;
-        					}
-        					else{
-        						var pos = rooms[vars.room][sockets].find(socket2);
-	        					rooms[vars.room][sockets][pos] = null;
-	        					if(pos == 0){
-	        						rooms[vars.room][player1token] = "";
-	        						rooms[vars.room][player1move] = "";
+		admin.auth().verifyIdToken(vars.token).then(function(decoded){
+			if(tokenToUsers[decoded]==null)
+				socket.emit('errorInCreateRoom', 'There is no user associated with this token.');
+			else if(rooms[vars.room]!=null)
+	        	socket.emit('errorInCreateRoom', 'There is a room already associated with that name.');
+	        else {
+	        	ref.child('users/'+tokenToUsers[decoded]).once('value').then(function(snap){
+	        		if(!snap.exists())
+	        			socket.emit('errorInCreateRoom', 'Problem accessing firebase data.');
+	        		else {
+	        			rooms[vars.room] = {players: 1, elo: snap.elo, player1token: decoded, player1move: "", player2token: {}, player2move: "", sockets: [socket, null], gameInterval: null};
+	        			var nsp = io.of('/'+vars.room);
+	        			nsp.on('connection', function(socket2){
+	        				socket2.on('disconnect', function(){
+	        					rooms[vars.room][players]--;
+	        					if(rooms[vars.room][players]==0){
+	        						rooms[vars.room] = null;
 	        					}
-	        					else {
-	        						rooms[vars.room][player2token] = "";
-	        						rooms[vars.room][player2move] = "";
+	        					else{
+	        						var pos = rooms[vars.room][sockets].find(socket2);
+		        					rooms[vars.room][sockets][pos] = null;
+		        					if(pos == 0){
+		        						rooms[vars.room][player1token] = "";
+		        						rooms[vars.room][player1move] = "";
+		        					}
+		        					else {
+		        						rooms[vars.room][player2token] = "";
+		        						rooms[vars.room][player2move] = "";
+		        					}
+	        						clearInterval(rooms[vars.room][gameInterval]);
+	        						rooms[vars.room][gameInterval] = null;
 	        					}
-        						clearIntesrval(rooms[vars.room][gameInterval]);
-        						rooms[vars.room][gameInterval] = null;
-        					}
-        					rooms[vars.room][players]--;
-        				});
-        				socket2.on("r", function(token) {
-        					if(rooms[vars.room].players==2){
-	        					if(token==rooms[vars.room].player1token){
-	        						rooms[vars.room][player1move] = "r";
-	        						socket2.emit("moveSuccess");
-	        					}
-	        					else if(token==rooms[vars.room].player2token){
-	        						rooms[vars.room][player2move] = "r";
-	        						socket2.emit("moveSuccess");
-	        					}
-	        					else {
-	        						socket2.emit("errorInMove", "There is no player in this room with that token.");
-	        					}
-	        				}
-	        				else {
-	        					socket2.emit("errorInMove", "There are not two players in the room yet.");
-	        				}
-        				});
-        				socket2.on("p", function(token) {
-        					if(rooms[vars.room].players==2){
-	        					if(token==rooms[vars.room].player1token){
-	        						rooms[vars.room][player1move] = "p";
-	        						socket2.emit("moveSuccess");
-	        					}
-	        					else if(token==rooms[vars.room].player2token){
-	        						rooms[vars.room][player2move] = "p";
-	        						socket2.emit("moveSuccess");
-	        					}
-	        					else {
-	        						socket2.emit("errorInMove", "There is no player in this room with that token.");
-	        					}
-	        				}
-	        				else {
-	        					socket2.emit("errorInMove", "There are not two players in the room yet.");
-	        				}
-        				});
-        				socket2.on("s", function(token) {
-        					if(rooms[vars.room].players==2){
-	        					if(token==rooms[vars.room].player1token){
-	        						rooms[vars.room][player1move] = "s";
-	        						socket2.emit("moveSuccess");
-	        					}
-	        					else if(token==rooms[vars.room].player2token){
-	        						rooms[vars.room][player2move] = "s";
-	        						socket2.emit("moveSuccess");
-	        					}
-	        					else {
-	        						socket2.emit("errorInMove", "There is no player in this room with that token.");
-	        					}
-	        				}
-	        				else {
-	        					socket2.emit("errorInMove", "There are not two players in the room yet.");
-	        				}
-        				});
-        			});
-        			socket.join(vars.room);
-        			socket.emit('createRoomSuccess');
-        		}
-        	});
-        }
+	        				});
+	        				socket2.on("r", function(token) {
+	        					admin.auth().verifyIdToken(token).then(function(decoded){
+		        					if(rooms[vars.room].players==2){
+			        					if(decoded==rooms[vars.room].player1token){
+			        						rooms[vars.room][player1move] = "r";
+			        						socket2.emit("moveSuccess");
+			        					}
+			        					else if(decoded==rooms[vars.room].player2token){
+			        						rooms[vars.room][player2move] = "r";
+			        						socket2.emit("moveSuccess");
+			        					}
+			        					else {
+			        						socket2.emit("errorInMove", "There is no player in this room with that token.");
+			        					}
+			        				}
+			        				else {
+			        					socket2.emit("errorInMove", "There are not two players in the room yet.");
+			        				}
+			        			});
+	        				});
+	        				socket2.on("p", function(token) {
+	        					admin.auth().verifyIdToken(token).then(function(decoded){
+		        					if(rooms[vars.room].players==2){
+			        					if(decoded==rooms[vars.room].player1token){
+			        						rooms[vars.room][player1move] = "p";
+			        						socket2.emit("moveSuccess");
+			        					}
+			        					else if(decoded==rooms[vars.room].player2token){
+			        						rooms[vars.room][player2move] = "p";
+			        						socket2.emit("moveSuccess");
+			        					}
+			        					else {
+			        						socket2.emit("errorInMove", "There is no player in this room with that token.");
+			        					}
+			        				}
+			        				else {
+			        					socket2.emit("errorInMove", "There are not two players in the room yet.");
+			        				}
+			        			});
+	        				});
+	        				socket2.on("s", function(token) {
+	        					admin.auth().verifyIdToken(token).then(function(decoded){
+		        					if(rooms[vars.room].players==2){
+			        					if(decoded==rooms[vars.room].player1token){
+			        						rooms[vars.room][player1move] = "s";
+			        						socket2.emit("moveSuccess");
+			        					}
+			        					else if(decoded==rooms[vars.room].player2token){
+			        						rooms[vars.room][player2move] = "s";
+			        						socket2.emit("moveSuccess");
+			        					}
+			        					else {
+			        						socket2.emit("errorInMove", "There is no player in this room with that token.");
+			        					}
+			        				}
+			        				else {
+			        					socket2.emit("errorInMove", "There are not two players in the room yet.");
+			        				}
+			        			});
+	        				});
+	        			});
+	        			socket.join(vars.room);
+	        			socket.emit('createRoomSuccess');
+	        		}
+	        	});
+	        }
+		}).catch(function(error){
+			socket.emit("errorInCreateRoom", "Bad token.")
+		})
 	});
 	socket.on('getRooms', function() {
+		ret = []
+		for(var x in rooms){
+			if(rooms[x].players == 1)
+				ret.push({name:x, elo: rooms[x].elo})
+		}
 		socket.emit(rooms);
 	});
 	socket.on('join', function(vars) {
-		if(tokenToUsers[vars.token]==null)
-			socket.emit('errorInJoinRoom', 'There is no user associated with this token.');
-        else if(rooms[vars.room]==null)
-        	socket.emit('errorInJoinRoom', 'There is no room associated with that name.');
-       	else {
-        	rooms[vars.room][players]+=1
-        	if(rooms[vars.room][players]==1){
-        		rooms[vars.room][player1token] = vars.token;
-        		rooms[vars.room][sockets][0] = socket;
-        	}
-        	else {
-        		rooms[vars.room][player2token] = vars.token;
-        		rooms[vars.room][sockets][1] = socket;
-        		startGame(vars.room);
-        	}
-        	socket.join(vars.room);
-        	socket.emit('joinRoomSuccess');
-       	}
+		admin.auth().verifyIdToken(vars.token).then(function(decoded){
+			if(tokenToUsers[decoded]==null)
+				socket.emit('errorInJoinRoom', 'There is no user associated with this token.');
+	        else if(rooms[vars.room]==null)
+	        	socket.emit('errorInJoinRoom', 'There is no room associated with that name.');
+	       	else {
+	        	rooms[vars.room][players]+=1
+	        	if(rooms[vars.room][players]==1){
+	        		rooms[vars.room][player1token] = decoded;
+	        		rooms[vars.room][sockets][0] = socket;
+	        	}
+	        	else {
+	        		if(rooms[vars.room][player2token]==null){
+		        		rooms[vars.room][player2token] = decoded;
+		        		rooms[vars.room][sockets][1] = socket;
+		        	}
+		        	else{
+		        		rooms[vars.room][player1token] = decoded;
+		        		rooms[vars.room][sockets][0] = socket;
+		        	}
+	        		startGame(vars.room);
+	        	}
+	        	socket.join(vars.room);
+	        	socket.emit('joinRoomSuccess');
+	       	}
+	    });
     });
 });
 function startGame(room) {
