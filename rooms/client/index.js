@@ -12,20 +12,20 @@ window.onload=function(){
 }
 function animation()
 {
-console.log(selected)
-if (selected=="r")
-	document.getElementById("outputYou").innerHTML = "<img src='rock.png'>"
-if (selected=="p")
-	document.getElementById("outputYou").innerHTML = "<img src='paper.png'>"
-if (selected=="s")
-	document.getElementById("outputYou").innerHTML = "<img src='scissors.png'>"
-if (selected=="None")
-	document.getElementById("outputYou").innerHTML = "<p>Much Wows, Such Empty</p>"
-document.getElementById("outputEnemy").innerHTML = "<img src='scissors.png'>"
-$(".Box").fadeOut();
-$(".OBox").fadeOut();
-$(".all").fadeOut();
-setTimeout(function(){secondPhase()},500)
+	console.log(selected)
+	if (selected=="r")
+		document.getElementById("outputYou").innerHTML = "<img src='rock.png'>"
+	if (selected=="p")
+		document.getElementById("outputYou").innerHTML = "<img src='paper.png'>"
+	if (selected=="s")
+		document.getElementById("outputYou").innerHTML = "<img src='scissors.png'>"
+	if (selected=="None")
+		document.getElementById("outputYou").innerHTML = "<p>Much Wows, Such Empty</p>"
+	document.getElementById("outputEnemy").innerHTML = "<img src='scissors.png'>"
+	$(".Box").fadeOut();
+	$(".OBox").fadeOut();
+	$(".all").fadeOut();
+	setTimeout(function(){secondPhase()},500)
 }
 function secondPhase()
 {

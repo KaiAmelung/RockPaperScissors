@@ -4,14 +4,48 @@
 	<title>RPS Login</title>
 	<script src="https://www.gstatic.com/firebasejs/3.6.6/firebase.js"></script>
 	<script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 	<script src="login.js"></script>
 </head>
 <body>
-	<center>
-		<input id = "user"/>
-		<input id = "pass" type = "password"/>
-		<button onclick="login()">Login</button><button onclick="signup()">Sign Up</button>
+	<div class="container"> 
+		<div class="jumbotron">
+			<h2><center>Competitive Rock Paper Scissors!</center></h2>
+		</div>
+		<center>
+		<table class="table table-hover table-bordered" style="width:35% !important;">
+			<tr>
+				<td><h5>Username:<input id = "user" class="form-control"/></h5></td>
+			</tr>
+			<tr>
+				<td><h5>Password:
+					<input id = "pass" type = "password" class="form-control"/>
+				</h5></td>
+			</tr>
+			<tr>
+				<td>
+					<center><button onclick="login()" class="btn btn-primary">Login</button>
+					<button onclick="signup()" class="btn btn-info">Sign Up</button></center>
+				</td>
+			</tr>
+		</table>
 		<p id = "result"></p>
+		<table style="width35% !important;">
+			<tr>
+				<td style="font-size:20px;">Are you ready for some competitive fun?
+				</td>
+			</tr>
+			<tr>
+				<td style="font-size:20px;">Sign up now and play rock paper scissors
+				</td>
+			</tr>
+			<tr>
+				<td style="font-size:20px;">competitively with a ranked elo system!
+				</td>
+			</tr>
+		</table>
 	</center>
+	</div>
 </body>
 </html>
