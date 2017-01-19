@@ -2,20 +2,32 @@
 <head>
 	<title>Client</title>
 	<link rel="stylesheet" type="text/css" href="main.css" media="screen" />
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 	<script src="index.js"></script>
 </head>
 <body>
-<div class="line"></div>
 <br>
-<h2 class="you">Your Side</h2>
-<table class="box">
+<div class="all">
+<h2 class="you">Your Side</h2><table class="timer"><tr><td class="timerText"><div id="outputTimer">30</div></td></tr></table><h2 class="other">Opponent Side</h2>
+<div class="line"></div>
+<table class="box" id="tableOne">
 	<tr><td><div class="paper" id="p"><img src="paper.png" onclick="paper()"></div></td><tr>
 	<tr><td><div class="rock" id="r"><img src="rock.png" onclick="rock()"></div></td>
 	<td><div class="scissors" id="s"><img src="scissors.png" onclick="scissors()"></div></td></tr>
 </table>
-<table class="box" style="display:none">
-	<tr><td>
-
+<table class="Obox" id="tableTwo">
+	<tr><td><div class="paper" id="p1"><img src="paper.png" onclick="paper()"></div></td><tr>
+	<tr><td><div class="rock" id="r1"><img src="rock.png" onclick="rock()"></div></td>
+	<td><div class="scissors" id="s1"><img src="scissors.png" onclick="scissors()"></div></td></tr>
+</table>
+<table class="boxHidden" style="display:none">
+	<tr><td><div id="outputYou"></td></td></tr>
+</table>
+<table class="OboxHidden" style="display:none">
+	<tr><td><div id="outputEnemy"></td></td></tr>
+</table>
+</div>
+<div id="winMessage" class="win"><center></center></div>
 </body>
 </html>
 
