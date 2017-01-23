@@ -13,10 +13,15 @@ firebase.initializeApp(config);
 
 setTimeout(function(){
 		if(firebase.auth().currentUser == null){
-			console.log(firebase.auth().currentUser)
 			location.href = "index.html"
 		}
+		else{
+			firebase.auth().currentUser.getToken(true).then(function(token){
+				socket.join()
+			})
+		}
 }, 1000)
+setTimeout(function())
 
 socket.on('timeLeft', function(updateTime){
   		var timeLeft=updateTime
