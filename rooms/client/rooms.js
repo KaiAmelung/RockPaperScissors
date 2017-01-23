@@ -8,13 +8,13 @@ var config = {
 firebase.initializeApp(config);
 setTimeout(function(){
 		if(firebase.auth().currentUser == null){
-			console.log(firebase.auth().currentUser)
 			location.href = "index.html"
 		}
 }, 1000)
 var socket = io();
 socket.on("rooms", function(stuff){
 	var ul = document.getElementById("games")
+	ul.innerHTML = ""
 	for(var i in stuff){
 		var li = document.createElement('LI')
 		li.innerHTML = stuff[i].name + " | ELO: " + stuff[i].elo
@@ -26,7 +26,6 @@ function refresh(){
 }
 function createRoom(name){
 	firebase.auth().currentUser.getToken(true).then(function(tokeni){
-		console.log(tokeni)
 		socket.emit("createRoom", {
 			room: name,
 			token: tokeni
@@ -34,4 +33,5 @@ function createRoom(name){
 	}).catch(function(err){
 		location.href = "index.html"
 	})
+	refresh()
 }
