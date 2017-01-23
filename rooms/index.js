@@ -194,7 +194,7 @@ function startGame(room) {
 			else if(rooms[room][player2move]=="r"&&rooms[room][player1move]=="s"||rooms[room][player2move]=="s"&&rooms[room][player1move]=="p"||rooms[room][player2move]=="p"&&rooms[room][player1move]=="r")
 				winner = rooms[room][player2token];
 			if(winner!="") {
-				nsp.emit("winner", winner);
+				nsp.emit("winner", winner.uid);
 				if(winner == rooms[room][player1token]){
 					ref.child('users/'+tokenToUsers[rooms[room][player1token]]).once('value').then(function(snap){
 						ref.child('users/'+tokenToUsers[rooms[room][player1token]]).update({

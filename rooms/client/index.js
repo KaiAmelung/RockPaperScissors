@@ -1,16 +1,16 @@
 var selected="None"
-//var io=socket.io()
+var socket = io()
 var timeLeft=30
 var switching="None"
-//io.on('timeLeft', function(updateTime){
-  //		var timeLeft=updateTime
-	//	});	
+
+socket.on('timeLeft', function(updateTime){
+  		var timeLeft=updateTime
+		});
 window.onload=function(){
-	setTimeout(function(){animation()},10000);
 	setInterval(function(){change()},250);
 
 }
-function animation()
+function animation(a)
 {
 	console.log(selected)
 	if (selected=="r")
@@ -21,18 +21,67 @@ function animation()
 		document.getElementById("outputYou").innerHTML = "<img src='scissors.png'>"
 	if (selected=="None")
 		document.getElementById("outputYou").innerHTML = "<p>Much Wows, Such Empty</p>"
-	document.getElementById("outputEnemy").innerHTML = "<img src='scissors.png'>"
+	console.log(imageChange(a))
+	document.getElementById("outputEnemy").innerHTML = imageChange(a)
 	$(".Box").fadeOut();
 	$(".OBox").fadeOut();
 	$(".all").fadeOut();
-	setTimeout(function(){secondPhase()},500)
+	setTimeout(function(){secondPhase(a)},500)
 }
-function secondPhase()
+function imageChange(a)
+{
+you=document.getElementById("outputYou").innerHTML;
+console.log(you)
+if (a=="w")
+{
+	if (you == '<img src="rock.png">')
+	{
+		return "<img src='scissors.png'>"
+	}
+	if (you == '<img src="paper.png">')
+	{
+		return "<img src='rock.png'>"
+	}
+	if (you == '<img src="scissors.png">')
+	{
+		return "<img src='paper.png'>"
+	}
+}
+if (a=="l")
+{
+	if (you == '<img src="rock.png">')
+	{
+		return "<img src='paper.png'>"
+	}
+	if (you == '<img src="paper.png">')
+	{
+		return "<img src='scissors.png'>"
+	}
+	if (you == '<img src="scissors.png">')
+	{
+		return "<img src='rock.png>"
+	}
+}
+if(a=="t")
+{
+	return you
+}
+else
+{
+	return "<p>Won By Default</p>"
+}
+}
+function secondPhase(a)
 {
 	console.log("Second");
 	$(".BoxHidden").fadeIn();
 	$(".OBoxHidden").fadeIn();
-	tie()
+	if (a=="w")
+		win()
+	if (a=="l")
+		lose()
+	if (a=="t")
+		tie()
 	setTimeout(function(){thirdPhase()},1000)
 }
 function thirdPhase()
@@ -111,6 +160,7 @@ function rock()
 	if (selected!="r")
 	{
 		selected="r"
+		socket.emit("r")
 		s.style="border: 8px solid red;"
 		p.style="border: 8px solid red;"
 		r.style="border: 8px solid #458B00;"
@@ -121,6 +171,7 @@ function paper()
 	if (selected!="p")
 	{
 		selected="p"
+		socket.emit("p")
 		s.style="border: 8px solid red;"
 		p.style="border: 8px solid #458B00;"
 		r.style="border: 8px solid red;"
@@ -131,6 +182,7 @@ function scissors()
 	if (selected!="s")
 	{
 		selected="s"
+		socket.emit("s")
 		s.style="border: 8px solid #458B00;"
 		r.style="border: 8px solid red;"
 		p.style="border: 8px solid red;"
