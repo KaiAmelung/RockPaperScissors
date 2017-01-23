@@ -1,14 +1,46 @@
 var selected="None"
-var socket = io()
+var socket = io();
 var timeLeft=30
 var switching="None"
+var config = {
+    apiKey: "AIzaSyD0bwuT6hzq-dwMLdCSl7dUau1m92gMlNY",
+    authDomain: "competitive-rps.firebaseapp.com",
+    databaseURL: "https://competitive-rps.firebaseio.com",
+    storageBucket: "competitive-rps.appspot.com",
+    messagingSenderId: "673281215044"
+  };
+firebase.initializeApp(config);
+
+setTimeout(function(){
+		if(firebase.auth().currentUser == null){
+			console.log(firebase.auth().currentUser)
+			location.href = "index.html"
+		}
+}, 1000)
 
 socket.on('timeLeft', function(updateTime){
   		var timeLeft=updateTime
 		});
+
 window.onload=function(){
 	setInterval(function(){change()},250);
 
+socket.on("winner",function(uid)
+{
+
+if(firebase.auth().currentUser.uid==uid);
+{
+	animation("w");
+}
+else
+{
+	animation("l");
+}
+
+});
+
+
+socket.on("tie",function(){animation("t");});
 }
 function animation(a)
 {
