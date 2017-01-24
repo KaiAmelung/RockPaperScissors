@@ -174,7 +174,6 @@ function startGame(room) {
 	var secondsLeft = 30;
 	var nsp = io.of('/'+room);
 	var interval = setInterval(function(){
-		console.log("interval is happening")
 		if(secondsLeft != 0){
 			console.log(secondsLeft)
 			nsp.emit("timeLeft", secondsLeft);
