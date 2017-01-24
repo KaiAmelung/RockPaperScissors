@@ -3,7 +3,6 @@ var express = require('express');
 var socketio = require('socket.io');
 var path = require('path');
 var admin = require('firebase-admin');
-var uid = require('rand-token').uid;
 admin.initializeApp({
   credential: admin.credential.cert('competitive-rps-firebase-adminsdk-aqmiv-272672c409.json'),
   databaseURL: 'https://competitive-rps.firebaseio.com'
