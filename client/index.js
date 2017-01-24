@@ -103,7 +103,7 @@ if (a=="w")
 		return "<img src='paper.png'>"
 	}
 }
-if (a=="l")
+else if (a=="l")
 {
 	if (you == '<img src="rock.png">')
 	{
@@ -118,7 +118,7 @@ if (a=="l")
 		return "<img src='rock.png>"
 	}
 }
-if(a=="t")
+else if(a=="t")
 {
 	return you
 }

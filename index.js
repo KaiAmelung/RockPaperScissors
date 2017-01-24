@@ -190,25 +190,29 @@ function startGame(room) {
 				nsp.emit("winner", winner);
 				if(winner == rooms[room].player1token){
 					ref.child('users/'+rooms[room].player1token).once('value').then(function(snap){
+						var newelo = snap.elo+10
 						ref.child('users/'+rooms[room].player1token).update({
-							elo: snap.elo+10
+							elo: newelo
 						});
 					});
 					ref.child('users/'+rooms[room].player2token).once('value').then(function(snap){
+						var newelo = snap.elo-10
 						ref.child('users/'+rooms[room].player2token).update({
-							elo: snap.elo-10
+							elo: newelo
 						});
 					});
 				}
 				else {
 					ref.child('users/'+rooms[room].player1token).once('value').then(function(snap){
+						var newelo = snap.elo-10
 						ref.child('users/'+rooms[room].player1token).update({
-							elo: snap.elo-10
+							elo: newelo
 						});
 					});
 					ref.child('users/'+rooms[room].player2token).once('value').then(function(snap){
+						var newelo = snap.elo+10
 						ref.child('users/'+rooms[room].player2token).update({
-							elo: snap.elo+10
+							elo: newelo
 						});
 					});
 				}
