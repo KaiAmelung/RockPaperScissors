@@ -11,42 +11,62 @@ var config = {
   };
 firebase.initializeApp(config);
 
+function get(name){
+   if(name=(new RegExp('[?&]'+encodeURIComponent(name)+'=([^&]*)')).exec(location.search))
+      return decodeURIComponent(name[1]);
+}
+
 setTimeout(function(){
-		if(firebase.auth().currentUser == null){
-			location.href = "index.html"
+		if(firebase.auth().currentUser == null || get("room")==null){
+			location.href = "rooms.html"
 		}
 		else{
-			firebase.auth().currentUser.getToken(true).then(function(token){
-				socket.join()
-			})
+			firebase.auth().currentUser.getToken(true).then(function(tokeni){
+				socket.emit("join", {
+					token: tokeni,
+					room: get("room")
+				});
+			});
 		}
 }, 1000)
-setTimeout(function())
 
-socket.on('timeLeft', function(updateTime){
-  		var timeLeft=updateTime
-		});
+socket.on("joinRoomSuccess", function(){
+	console.log("successfully joined")
+	socket = io('/'+get("room"))
+	socket.on('timeLeft', function(updateTime){
+		console.log("new time "+updateTime)
+	  	timeLeft=updateTime
+	});
+	socket.on("winner",function(uid){
+		if(firebase.auth().currentUser.uid==uid)
+		{
+			animation("w");
+		}
+		else
+		{
+			animation("l");
+		}
+		setTimeout(function(){
+			location.href = "rooms.html"
+		}, 5000);
+	});
+	socket.on("tie",function(){
+		animation("t");
+	});
+	$(".all").fadeIn()
+});
 
-window.onload=function(){
-	setInterval(function(){change()},250);
-
-socket.on("winner",function(uid)
-{
-
-if(firebase.auth().currentUser.uid==uid);
-{
-	animation("w");
-}
-else
-{
-	animation("l");
-}
-
+socket.on("errorInJoinRoom", function(msg){
+	console.log(msg)
+	location.href = "rooms.html"
 });
 
 
-socket.on("tie",function(){animation("t");});
+
+window.onload=function(){
+	setInterval(function(){change()},250);
 }
+
 function animation(a)
 {
 	console.log(selected)
@@ -58,7 +78,6 @@ function animation(a)
 		document.getElementById("outputYou").innerHTML = "<img src='scissors.png'>"
 	if (selected=="None")
 		document.getElementById("outputYou").innerHTML = "<p>Much Wows, Such Empty</p>"
-	console.log(imageChange(a))
 	document.getElementById("outputEnemy").innerHTML = imageChange(a)
 	$(".Box").fadeOut();
 	$(".OBox").fadeOut();
@@ -197,7 +216,9 @@ function rock()
 	if (selected!="r")
 	{
 		selected="r"
-		socket.emit("r")
+		firebase.auth().currentUser.getToken(true).then(function(tokeni){
+			socket.emit("r", tokeni)
+		});
 		s.style="border: 8px solid red;"
 		p.style="border: 8px solid red;"
 		r.style="border: 8px solid #458B00;"
@@ -208,7 +229,9 @@ function paper()
 	if (selected!="p")
 	{
 		selected="p"
-		socket.emit("p")
+		firebase.auth().currentUser.getToken(true).then(function(tokeni){
+			socket.emit("p", tokeni)
+		});
 		s.style="border: 8px solid red;"
 		p.style="border: 8px solid #458B00;"
 		r.style="border: 8px solid red;"
@@ -219,7 +242,9 @@ function scissors()
 	if (selected!="s")
 	{
 		selected="s"
-		socket.emit("s")
+		firebase.auth().currentUser.getToken(true).then(function(tokeni){
+			socket.emit("s", tokeni)
+		});
 		s.style="border: 8px solid #458B00;"
 		r.style="border: 8px solid red;"
 		p.style="border: 8px solid red;"

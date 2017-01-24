@@ -6,9 +6,11 @@ var config = {
     messagingSenderId: "673281215044"
   };
 firebase.initializeApp(config);
-if(firebase.auth().currentUser != null){
-	location.href = "rooms.html"
-}
+setTimeout(function(){
+	if(firebase.auth().currentUser != null){
+		location.href = "rooms.html"
+	}
+}, 1000);
 function login(){
 	firebase.auth().signInWithEmailAndPassword(document.getElementById("user").value, document.getElementById("pass").value).then(function(user){
 		document.getElementById("result").innerHTML = "User signed in"

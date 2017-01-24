@@ -10,6 +10,9 @@ setTimeout(function(){
 		if(firebase.auth().currentUser == null){
 			location.href = "index.html"
 		}
+		else {
+			refresh()
+		}
 }, 1000)
 var socket = io();
 socket.on("rooms", function(stuff){
@@ -17,7 +20,10 @@ socket.on("rooms", function(stuff){
 	ul.innerHTML = ""
 	for(var i in stuff){
 		var li = document.createElement('LI')
-		li.innerHTML = stuff[i].name + " | ELO: " + stuff[i].elo
+		if(stuff[i].players==1)
+			li.innerHTML = "<a href='game.html?room="+stuff[i].name+"'>" + stuff[i].name + " | ELO: " + stuff[i].elo + " | 1/2</a>"
+		else
+			li.innerHTML = "<a href='game.html?room="+stuff[i].name+"'>" + stuff[i].name + " | 0/2</a>"
 		ul.appendChild(li)
 	}
 })
@@ -32,6 +38,11 @@ function createRoom(name){
 		})
 	}).catch(function(err){
 		location.href = "index.html"
-	})
+	});
+}
+socket.on("createRoomSuccess", function(){
 	refresh()
+})
+function create(){
+	createRoom(document.getElementById("creator").value)
 }
