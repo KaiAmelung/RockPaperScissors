@@ -1,5 +1,5 @@
 {
-  "name": "rooms",
+  "name": "rps",
   "version": "1.0.0",
   "description": "Different rooms for rps games.",
   "main": "index.js",
@@ -10,5 +10,21 @@
     "rock"
   ],
   "author": "Kai Amelung and Jacob Blindenbach",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.14.0",
+    "firebase-admin": "^4.0.4",
+    "socket.io": "^1.7.2",
+    "path": "^0.12.7",
+    "firebase": "^3.6.4"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KaiAmelung/RockPaperScissors.git"
+  },
+  "bugs": {
+    "url": "https://github.com/KaiAmelung/RockPaperScissors/issues"
+  },
+  "homepage": "https://github.com/KaiAmelung/RockPaperScissors#readme"
 }
