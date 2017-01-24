@@ -137,7 +137,7 @@ io.sockets.on('connection', function(socket) {
 					elo = 1000
 				}
 				else {
-					elo = snap.elo
+					elo = snap.val().elo
 				}
 				if(rooms[vars.room]==null)
 	        		socket.emit('errorInJoinRoom', 'There is no room associated with that name.');
@@ -190,13 +190,13 @@ function startGame(room) {
 				nsp.emit("winner", winner);
 				if(winner == rooms[room].player1token){
 					ref.child('users/'+rooms[room].player1token).once('value').then(function(snap){
-						var newelo = snap.elo+10
+						var newelo = snap.val().elo+10
 						ref.child('users/'+rooms[room].player1token).update({
 							elo: newelo
 						});
 					});
 					ref.child('users/'+rooms[room].player2token).once('value').then(function(snap){
-						var newelo = snap.elo-10
+						var newelo = snap.val().elo-10
 						ref.child('users/'+rooms[room].player2token).update({
 							elo: newelo
 						});
@@ -204,13 +204,13 @@ function startGame(room) {
 				}
 				else {
 					ref.child('users/'+rooms[room].player1token).once('value').then(function(snap){
-						var newelo = snap.elo-10
+						var newelo = snap.val().elo-10
 						ref.child('users/'+rooms[room].player1token).update({
 							elo: newelo
 						});
 					});
 					ref.child('users/'+rooms[room].player2token).once('value').then(function(snap){
-						var newelo = snap.elo+10
+						var newelo = snap.val().elo+10
 						ref.child('users/'+rooms[room].player2token).update({
 							elo: newelo
 						});
