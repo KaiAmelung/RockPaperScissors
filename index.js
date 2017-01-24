@@ -183,7 +183,7 @@ function startGame(room) {
 			clearInterval(interval);
 			var winner = "";
 			if(rooms[room].player1move!=""&&rooms[room].player2move==""||rooms[room].player1move=="r"&&rooms[room].player2move=="s"||rooms[room].player1move=="s"&&rooms[room].player2move=="p"||rooms[room].player1move=="p"&&rooms[room].player2move=="r")
-				winner = rooms[room][player1token];
+				winner = rooms[room].player1token;
 			else if(rooms[room].player2move!=""&&rooms[room].player1move==""||rooms[room].player2move=="r"&&rooms[room].player1move=="s"||rooms[room].player2move=="s"&&rooms[room].player1move=="p"||rooms[room].player2move=="p"&&rooms[room].player1move=="r")
 				winner = rooms[room].player2token;
 			if(winner!="") {
