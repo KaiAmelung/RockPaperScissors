@@ -4,7 +4,8 @@
   "description": "Different rooms for rps games.",
   "main": "index.js",
   "scripts": {
-    "test": "node index.js"
+    "test": "node index.js",
+    "start": "node index.js"
   },
   "keywords": [
     "rock"
