@@ -91,7 +91,6 @@ io.sockets.on('connection', function(socket) {
         				else {
         					socket2.emit("errorInMove", "There are not two players in the room yet.");
         				}
-        				console.log(rooms[vars.room])
         			});
 				});
 				socket2.on("s", function(token) {
