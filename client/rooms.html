@@ -5,12 +5,19 @@
 	<script src="https://www.gstatic.com/firebasejs/3.6.6/firebase.js"></script>
 	<script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
 	<script src="rooms.js"></script>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
 <body>
-	<button onclick="refresh()">Refresh</button>
-	<input id="creator" type="text"/>
-	<button onclick="create()">Create Room</button>
+	<center>
+	<button onclick="refresh()">Refresh Games</button>
+	<br/>
 	<ul id="games">
 	</ul>
+	<br/>
+	<input id="creator" type="text" placeholder="Game name"/>
+	<br/>
+	<button onclick="create()">Create Room</button>
+	</center>
 </body>
 </html>
