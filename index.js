@@ -171,7 +171,7 @@ io.sockets.on('connection', function(socket) {
     });
 });
 function startGame(room) {
-	var secondsLeft = 30;
+	var secondsLeft = 15;
 	var nsp = io.of('/'+room);
 	var interval = setInterval(function(){
 		if(secondsLeft != 0){
