@@ -3,4 +3,8 @@ body {
 }
 li {
 	padding: 5px !important;
+	font-size: 3em;
+}
+#creator {
+	width: 40% !important;
 }

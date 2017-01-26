@@ -29,6 +29,7 @@ io.sockets.on('connection', function(socket) {
 			var nsp = io.of('/'+vars.room);
 			nsp.on('connection', function(socket2){
 				socket2.on('disconnect', function(){
+					socket2.leave();
 					if(rooms[vars.room]!=null){
 						rooms[vars.room].players=rooms[vars.room].players-1;
 						if(rooms[vars.room].players==0){
@@ -66,7 +67,6 @@ io.sockets.on('connection', function(socket) {
         					else {
         						socket2.emit("errorInMove", "There is no player in this room with that token.");
         					}
-        					console.log(rooms[vars.room])
         				}
         				else {
         					socket2.emit("errorInMove", "There are not two players in the room yet.");
@@ -111,7 +111,6 @@ io.sockets.on('connection', function(socket) {
         				else {
         					socket2.emit("errorInMove", "There are not two players in the room yet.");
         				}
-        				console.log(rooms[vars.room])
         			});
 				});
 			});
@@ -171,7 +170,7 @@ io.sockets.on('connection', function(socket) {
     });
 });
 function startGame(room) {
-	var secondsLeft = 15;
+	var secondsLeft = 10;
 	var nsp = io.of('/'+room);
 	var interval = setInterval(function(){
 		if(secondsLeft != 0){

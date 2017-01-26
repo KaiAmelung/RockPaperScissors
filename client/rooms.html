@@ -12,15 +12,17 @@
 </head>
 <body>
 	<center>
-	<button onclick="refresh()">Refresh Games!</button>
+	<button class="btn btn-info" onclick="refresh()">Refresh Games!</button>
 	<br/>
 	<br/>
 	<ul class="list-group" id="games">
 	</ul>
 	<br/>
-	<input id="creator" type="text" placeholder="Game name"/>
-	<br/>
-	<button onclick="create()">Create Room</button>
+	<div class="form-group">
+		<input id="creator" class="form-control" type="text" placeholder="Room name (no spaces)"/>
+	</div>
+	<button class="btn btn-info" onclick="create()">Create Room</button>
+	<p style="color:red" id="err"></p>
 	</center>
 </body>
 </html>

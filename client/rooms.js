@@ -44,5 +44,9 @@ socket.on("createRoomSuccess", function(){
 	refresh()
 })
 function create(){
-	createRoom(document.getElementById("creator").value)
+	var name = document.getElementById("creator").value;
+	if(name.length!=0 && name.length<9 && name.indexOf(" ")==-1)
+		createRoom()
+	else
+		document.getElementById("err").innerHTML = "Invalid room name. Name must be less than 9 characters, and not contain spaces."
 }
