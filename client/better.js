@@ -11,6 +11,10 @@ var scissors= new Image();
 scissors.src = 'betterscissors.png';
 var rock = new Image();
 rock.src = 'betterrock.png';
+var w
+var h
+var circles=[1,1,10,0,-1]
+var selected=""
 /*
 var socket = io();
 var timeLeft=30
@@ -81,6 +85,45 @@ function startGame()
 	setInterval(function(){
 		drawScreen();
 	},20)
+	can.onmousedown=function(evt){
+		if (selected=="")
+		{
+			x=evt.offsetX;
+			y=evt.offsetY;
+			var top=h/2-(0.83130081301*(w/7))
+			var bottom=h/2+(0.83130081301*(w/7))
+			if ((w/7)<=x && x<=(2*w/7) && top<=y && y<=bottom)
+			{
+				rockClick();
+			}
+			if ((3*w/7)<=x && x<=(4*w/7) && top<=y && y<=bottom)
+			{
+				scissorsClick();
+			}
+			if ((5*w/7)<=x && x<=(6*w/7) && top<=y && y<=bottom)
+			{
+				paperClick();
+			}
+		}	
+	}
+}
+function rockClick()
+{
+selected="r"
+console.log("rock");
+}
+function paperClick()
+{
+selected="p"
+console.log("paper");
+}
+function scissorsClick()
+{
+selected="s"
+console.log("scissors");
+
+
+
 }
 
 function resizeScreen(){
@@ -94,17 +137,56 @@ function load()
 function drawScreen()
 {
 	resizeScreen()
-	var w = can.width;
-	var h = can.height;
+	w = can.width;
+	h = can.height;
 
-	var x=w/7
+	ctx.fillStyle = "#e3e3e3";
+	ctx.fillRect(0, 0,w,h);
 	var top=h/2-(0.83130081301*(w/7))
-	var bottom=h/2+(0.83130081301*(w/7))
-	console.log(h/2)
-	console.log(bottom)
-	console.log(top)
-	//x=x+"px"
-    ctx.drawImage(paper,5*w/7,top,6*w/7,bottom);
-    ctx.drawImage(scissors,3*(w/7),top,4*w/7,bottom);
-    ctx.drawImage(rock,w/7,top,2*w/7,bottom);
+	var bottom=(0.83130081301*(w/7)*2)
+	var addh=h/16
+	var addw=addh/1.66260162602	//x=x+"px"
+	if (selected!="p")
+    	ctx.drawImage(paper,5*w/7,top,w/7,bottom);
+    else
+    	ctx.drawImage(paper,5*w/7-(addw/2),top-(addh/2),w/7+addw,bottom+addh)
+    if(selected!="s")
+    	ctx.drawImage(scissors,3*(w/7),top,w/7,bottom);
+    else
+    	ctx.drawImage(scissors,3*w/7-(addw/2),top-(addh/2),w/7+addw,bottom+addh)
+    if(selected!="r")
+    	ctx.drawImage(rock,w/7,top,w/7,bottom);
+    else
+    	ctx.drawImage(rock,w/7-(addw/2),top-(addh/2),w/7+addw,bottom+addh)
+    radius=h/64
+    height=h/6
+    for (var i=1;i<6;i++)
+    {
+    	ctx.beginPath();
+    	ctx.strokeStyle="#c3c3c3"
+    	ctx.lineWidth=3;
+    	ctx.arc((i*w/6),height,radius,0,2*Math.PI,false)
+    	if (circles[i-1]==0)
+    	{
+    		console.log("Change")
+    		ctx.fillStyle="#e3e3e3"
+    	}
+    	if (circles[i-1]==10)
+    	{
+    		ctx.fillStyle="#ADD8E6"
+    	}
+    	if (circles[i-1]==-1)
+    	{
+    		ctx.fillStyle="#FF716D"
+    	}
+    	if (circles[i-1]==1)
+    	{
+			ctx.fillStyle="#90ee90"    		
+    	}
+    	ctx.fill();
+    	ctx.stroke();
+    }
+
+    
+
 }
