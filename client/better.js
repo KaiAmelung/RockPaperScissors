@@ -17,7 +17,6 @@ var h
 var circles=[0,0,10,0,0]
 var selected=""
 var socket = io();
-var timeLeft=30
 var switching="None"
 var config = {
     apiKey: "AIzaSyD0bwuT6hzq-dwMLdCSl7dUau1m92gMlNY",
