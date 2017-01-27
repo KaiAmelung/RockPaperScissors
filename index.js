@@ -229,6 +229,11 @@ function startGame(room) {
 						rooms[room] = null;
 					}, 5000);
 				}
+				else {
+					rooms[room].player1move = "";
+					rooms[room].player2move = "";
+					startGame(room);
+				}
 			}
 			else {
 				nsp.emit("tie");
