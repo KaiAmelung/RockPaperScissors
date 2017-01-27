@@ -1,4 +1,5 @@
-
+var screenInterval = null;
+var timeLeft = 10;
 var can=document.getElementById("c");
 var d=document.getElementById("screen");
 can.width=d.offsetWidth;
@@ -13,9 +14,8 @@ var rock = new Image();
 rock.src = 'betterrock.png';
 var w
 var h
-var circles=[1,1,10,0,-1]
+var circles=[0,0,10,0,0]
 var selected=""
-/*
 var socket = io();
 var timeLeft=30
 var switching="None"
@@ -51,79 +51,97 @@ socket.on("joinRoomSuccess", function(){
 	console.log("successfully joined")
 	socket = io('/'+get("room"))
 	socket.on('timeLeft', function(updateTime){
-		console.log("new time "+updateTime)
 	  	timeLeft=updateTime
 	});
 	socket.on("winner",function(uid){
-		if(firebase.auth().currentUser.uid==uid)
-		{
-			animation("w");
-		}
-		else
-		{
-			animation("l");
-		}
 		setTimeout(function(){
 			location.href = "rooms.html"
 		}, 5000);
 	});
+	socket.on("win", function(token){
+		if(token == firebase.auth().currentUser.uid){
+			if(circles[0]==0)
+				circles[0]=1
+			else if(circles[1]==0)
+				circles[1]=1
+			else{
+				circles[2]=1
+				winAnimation(true);
+			}
+		}
+		else {
+			if(circles[4]==0)
+				circles[4]=-1
+			else if(circles[3]==0)
+				circles[3]=-1
+			else{
+				circles[2]=-1
+				winAnimation(true);
+			}
+		}
+	})
 	socket.on("tie",function(){
-		animation("t");
+		selected = ""
 	});
-	$(".screen").fadeIn()
-	loadScreen()
+	$("#screen").fadeIn()
+	startGame()
 });
 
 socket.on("errorInJoinRoom", function(msg){
 	console.log(msg)
 	location.href = "rooms.html"
 });
-*/
+function winAnimation(winner){
+
+}
 function startGame()
 {
 	load()
-	setInterval(function(){
+	screenInterval = setInterval(function(){
 		drawScreen();
 	},20)
 	can.onmousedown=function(evt){
-		if (selected=="")
+		x=evt.offsetX;
+		y=evt.offsetY;
+		var top=h/2-(0.83130081301*(w/7))
+		var bottom=h/2+(0.83130081301*(w/7))
+		if ((w/7)<=x && x<=(2*w/7) && top<=y && y<=bottom)
 		{
-			x=evt.offsetX;
-			y=evt.offsetY;
-			var top=h/2-(0.83130081301*(w/7))
-			var bottom=h/2+(0.83130081301*(w/7))
-			if ((w/7)<=x && x<=(2*w/7) && top<=y && y<=bottom)
-			{
-				rockClick();
-			}
-			if ((3*w/7)<=x && x<=(4*w/7) && top<=y && y<=bottom)
-			{
-				scissorsClick();
-			}
-			if ((5*w/7)<=x && x<=(6*w/7) && top<=y && y<=bottom)
-			{
-				paperClick();
-			}
-		}	
+			rockClick();
+		}
+		if ((3*w/7)<=x && x<=(4*w/7) && top<=y && y<=bottom)
+		{
+			scissorsClick();
+		}
+		if ((5*w/7)<=x && x<=(6*w/7) && top<=y && y<=bottom)
+		{
+			paperClick();
+		}
 	}
 }
 function rockClick()
 {
 selected="r"
+firebase.auth().currentUser.getToken(true).then(function(tokeni){
+	socket.emit("r", tokeni)
+});
 console.log("rock");
 }
 function paperClick()
 {
 selected="p"
+firebase.auth().currentUser.getToken(true).then(function(tokeni){
+	socket.emit("p", tokeni)
+});
 console.log("paper");
 }
 function scissorsClick()
 {
 selected="s"
+firebase.auth().currentUser.getToken(true).then(function(tokeni){
+	socket.emit("s", tokeni)
+});
 console.log("scissors");
-
-
-
 }
 
 function resizeScreen(){
@@ -168,7 +186,6 @@ function drawScreen()
     	ctx.arc((i*w/6),height,radius,0,2*Math.PI,false)
     	if (circles[i-1]==0)
     	{
-    		console.log("Change")
     		ctx.fillStyle="#e3e3e3"
     	}
     	if (circles[i-1]==10)
@@ -186,7 +203,7 @@ function drawScreen()
     	ctx.fill();
     	ctx.stroke();
     }
-
-    
-
+    ctx.font = "40px Arial";
+    ctx.fillStyle="#000000"
+	ctx.fillText(timeLeft,w/2-25, height/2);
 }

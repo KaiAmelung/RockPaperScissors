@@ -25,7 +25,7 @@ io.sockets.on('connection', function(socket) {
 	});
 	socket.on('createRoom', function(vars){
 		admin.auth().verifyIdToken(vars.token).then(function(decoded){
-			rooms[vars.room] = {players: 0, elo: -1, player1token: "", player1move: "", player2token: "", player2move: "", sockets: [null, null], gameInterval: null};
+			rooms[vars.room] = {players: 0, elo: -1, player1token: "", player1move: "", player2token: "", player2move: "", player1wins: 0, player2wins: 0, sockets: [null, null], gameInterval: null};
 			var nsp = io.of('/'+vars.room);
 			nsp.on('connection', function(socket2){
 				socket2.on('disconnect', function(){
@@ -179,48 +179,56 @@ function startGame(room) {
 			secondsLeft-=1;
 		}
 		else {
+			nsp.emit("timeLeft", secondsLeft)
 			clearInterval(interval);
 			var winner = "";
-			if(rooms[room].player1move!=""&&rooms[room].player2move==""||rooms[room].player1move=="r"&&rooms[room].player2move=="s"||rooms[room].player1move=="s"&&rooms[room].player2move=="p"||rooms[room].player1move=="p"&&rooms[room].player2move=="r")
+			if(rooms[room].player1move!=""&&rooms[room].player2move==""||rooms[room].player1move=="r"&&rooms[room].player2move=="s"||rooms[room].player1move=="s"&&rooms[room].player2move=="p"||rooms[room].player1move=="p"&&rooms[room].player2move=="r"){
 				winner = rooms[room].player1token;
-			else if(rooms[room].player2move!=""&&rooms[room].player1move==""||rooms[room].player2move=="r"&&rooms[room].player1move=="s"||rooms[room].player2move=="s"&&rooms[room].player1move=="p"||rooms[room].player2move=="p"&&rooms[room].player1move=="r")
+				rooms[room].player1wins++;
+			}
+			else if(rooms[room].player2move!=""&&rooms[room].player1move==""||rooms[room].player2move=="r"&&rooms[room].player1move=="s"||rooms[room].player2move=="s"&&rooms[room].player1move=="p"||rooms[room].player2move=="p"&&rooms[room].player1move=="r"){
 				winner = rooms[room].player2token;
+				rooms[room].player2wins++;
+			}
 			if(winner!="") {
-				nsp.emit("winner", winner);
-				if(winner == rooms[room].player1token){
-					ref.child('users/'+rooms[room].player1token).once('value').then(function(snap){
-						var newelo = snap.val().elo+10
-						ref.child('users/'+rooms[room].player1token).update({
-							elo: newelo
+				nsp.emit("win", winner);
+				if(rooms[room].player1wins==3 || rooms[room].player2wins==3) {
+					nsp.emit("winner", winner)
+					if(winner == rooms[room].player1token){
+						ref.child('users/'+rooms[room].player1token).once('value').then(function(snap){
+							var newelo = snap.val().elo+10
+							ref.child('users/'+rooms[room].player1token).update({
+								elo: newelo
+							});
 						});
-					});
-					ref.child('users/'+rooms[room].player2token).once('value').then(function(snap){
-						var newelo = snap.val().elo-10
-						ref.child('users/'+rooms[room].player2token).update({
-							elo: newelo
+						ref.child('users/'+rooms[room].player2token).once('value').then(function(snap){
+							var newelo = snap.val().elo-10
+							ref.child('users/'+rooms[room].player2token).update({
+								elo: newelo
+							});
 						});
-					});
+					}
+					else {
+						ref.child('users/'+rooms[room].player1token).once('value').then(function(snap){
+							var newelo = snap.val().elo-10
+							ref.child('users/'+rooms[room].player1token).update({
+								elo: newelo
+							});
+						});
+						ref.child('users/'+rooms[room].player2token).once('value').then(function(snap){
+							var newelo = snap.val().elo+10
+							ref.child('users/'+rooms[room].player2token).update({
+								elo: newelo
+							});
+						});
+					}
+					setTimeout(function(){
+						nsp.emit("endGame");
+						for(var i = 0; i<rooms[room].sockets.length; i++)
+							rooms[room].sockets[i].leave(room);
+						rooms[room] = null;
+					}, 5000);
 				}
-				else {
-					ref.child('users/'+rooms[room].player1token).once('value').then(function(snap){
-						var newelo = snap.val().elo-10
-						ref.child('users/'+rooms[room].player1token).update({
-							elo: newelo
-						});
-					});
-					ref.child('users/'+rooms[room].player2token).once('value').then(function(snap){
-						var newelo = snap.val().elo+10
-						ref.child('users/'+rooms[room].player2token).update({
-							elo: newelo
-						});
-					});
-				}
-				setTimeout(function(){
-					nsp.emit("endGame");
-					for(var i = 0; i<rooms[room].sockets.length; i++)
-						rooms[room].sockets[i].leave(room);
-					rooms[room] = null;
-				}, 5000);
 			}
 			else {
 				nsp.emit("tie");
