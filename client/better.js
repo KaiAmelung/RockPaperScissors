@@ -53,6 +53,13 @@ socket.on("joinRoomSuccess", function(){
 	  	timeLeft=updateTime
 	});
 	socket.on("winner",function(uid){
+		if(uid == firebase.auth().currentUser.uid){
+			finalWinAnimation(true)
+		}
+		else {
+			finalWinAnimation(false)
+		}
+		selected=""
 		setTimeout(function(){
 			location.href = "rooms.html"
 		}, 5000);
@@ -65,8 +72,8 @@ socket.on("joinRoomSuccess", function(){
 				circles[1]=1
 			else{
 				circles[2]=1
-				winAnimation(true);
 			}
+			winAnimation(true);
 		}
 		else {
 			if(circles[4]==0)
@@ -75,9 +82,10 @@ socket.on("joinRoomSuccess", function(){
 				circles[3]=-1
 			else{
 				circles[2]=-1
-				winAnimation(true);
 			}
+			winAnimation(false);
 		}
+		selected=""
 	})
 	socket.on("tie",function(){
 		selected = ""
@@ -91,6 +99,9 @@ socket.on("errorInJoinRoom", function(msg){
 	location.href = "rooms.html"
 });
 function winAnimation(winner){
+
+}
+function finalWinAnimation(winner){
 
 }
 function startGame()
