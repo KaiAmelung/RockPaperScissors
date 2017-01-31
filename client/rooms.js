@@ -13,6 +13,9 @@ setTimeout(function(){
 		}
 		else {
 			refresh()
+			firebase.database().ref("/users/"+firebase.auth().currentUser.uid).once('value').then(function(snap){
+				document.getElementById('elo').innerHTML = "ELO: "+snap.val().elo
+			});
 		}
 }, 1000)
 socket.on("rooms", function(stuff){
