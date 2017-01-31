@@ -4,7 +4,7 @@ var socketio = require('socket.io');
 var path = require('path');
 var admin = require('firebase-admin');
 admin.initializeApp({
-  credential: admin.credential.cert('CompetitiveRPS-d29216252a12.json'),
+  credential: admin.credential.cert('competitive-rps-firebase-adminsdk-aqmiv-2096938992.json'),
   databaseURL: 'https://competitive-rps.firebaseio.com'
 });
 var ref = admin.database().ref('/');
