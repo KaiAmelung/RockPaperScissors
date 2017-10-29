@@ -18,16 +18,16 @@ setTimeout(function(){
 			});
 		}
 }, 1000)
-socket.on("rooms", function(stuff){
-	var ul = document.getElementById("games")
-	ul.innerHTML = ""
-	for(var i in stuff){
-		var li = document.createElement('LI')
-		if(stuff[i].players==1)
-			li.innerHTML = "<a href='better.html?room="+stuff[i].name+"'>" + stuff[i].name + " | ELO: " + stuff[i].elo + " | 1/2</a>"
+socket.on("rooms", function(listRooms){
+	var listOfAvailableGames = document.getElementById("games")
+	listOfAvailableGames.innerHTML = ""
+	for(var i in listRooms){
+		var individualRoomTag = document.createElement('LI')
+		if(listRooms[i].players==1)
+			individualRoomTag.innerHTML = "<a href='better.html?room="+listRooms[i].name+"'>" + listRooms[i].name + " | ELO: " + listRooms[i].elo + " | 1/2</a>"
 		else
-			li.innerHTML = "<a href='better.html?room="+stuff[i].name+"'>" + stuff[i].name + " | 0/2</a>"
-		ul.appendChild(li)
+			individualRoomTag.innerHTML = "<a href='better.html?room="+listRooms[i].name+"'>" + listRooms[i].name + " | 0/2</a>"
+		listOfAvailableGames.appendChild(li)
 	}
 })
 socket.on("createRoomSuccess", function(){
